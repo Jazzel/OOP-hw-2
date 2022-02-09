@@ -91,8 +91,8 @@ void initialize()
         *(grid + i) = 'L';
     }
     // generate two random numbers and store in ghostRow and ghostCol variables
-    ghostRow = 0;
-    ghostCol = 0;
+    ghostRow = 5;
+    ghostCol = 2;
 }
 
 int checkCoOrdinates(int x, int y)
@@ -112,25 +112,193 @@ int getGhostBlock(int ghostX, int ghostY)
     return (ghostY * 8) + ghostX;
 }
 
-char checkGhostAndClickedBlockDistance(int ghostBlock, int clickedRow, int clickedCol int clickedBlock)
+char generateRandomChar()
 {
-    if (abs(clickedBlock - ghostBlock) == 0 || abs(clickedBlock - ghostBlock) == 1)
+    return 'Z';
+}
+
+// char sideBlocks(int ghostBlock, int clickedBlock)
+// {
+//     if (clickedBlock == ghostBlock || (clickedBlock - 7) == ghostBlock || (clickedBlock - 8) == ghostBlock || (clickedBlock + 1) == ghostBlock || (clickedBlock + 8) == ghostBlock || (clickedBlock + 9) == ghostBlock)
+//     {
+//         return 'S';
+//     }
+// }
+
+// char midBlocks(int ghostBlock, int clickedBlock)
+// {
+//     if (clickedBlock == ghostBlock || (clickedBlock - 1) == ghostBlock || (clickedBlock - 7) == ghostBlock || (clickedBlock - 8) == ghostBlock || (clickedBlock - 9) == ghostBlock || (clickedBlock + 1) == ghostBlock || (clickedBlock + 7) == ghostBlock || (clickedBlock + 8) == ghostBlock || (clickedBlock + 9) == ghostBlock)
+//     {
+//         return 'S';
+//     }
+// }
+
+// char cornerBlocks(int ghostBlock, int clickedBlock)
+// {
+//     if (ghostBlock == 0)
+//     {
+//         if (clickedBlock == ghostBlock || (clickedBlock - 1) == ghostBlock || (clickedBlock - 8) == ghostBlock || (clickedBlock - 9) == ghostBlock)
+//         {
+//             return 'S';
+//         }
+//         else if ((clickedBlock - 2) == ghostBlock || (clickedBlock - 3) == ghostBlock || (clickedBlock - 16) == ghostBlock || (clickedBlock - 18) == ghostBlock || (clickedBlock - 24) == ghostBlock || (clickedBlock - 27) == ghostBlock)
+//         {
+//             return 'T';
+//         }
+//         else if ((clickedBlock - 4) == ghostBlock || (clickedBlock - 32) == ghostBlock || (clickedBlock - 36) == ghostBlock)
+//         {
+//             return 'B';
+//         }
+//         else
+//         {
+//             return generateRandomChar();
+//         }
+//     }
+//     else if (ghostBlock == (rows - 1))
+//     {
+//         if (clickedBlock == ghostBlock || (clickedBlock + 1) == ghostBlock || (clickedBlock - 7) == ghostBlock || (clickedBlock - 8) == ghostBlock)
+//         {
+//             return 'S';
+//         }
+//         else if ((clickedBlock + 2) == ghostBlock || (clickedBlock + 3) == ghostBlock || (clickedBlock - 16) == ghostBlock || (clickedBlock - 24) == ghostBlock || (clickedBlock - 14) == ghostBlock || (clickedBlock - 21) == ghostBlock)
+//         {
+//             return 'T';
+//         }
+//         else if ((clickedBlock + 4) == ghostBlock || (clickedBlock - 32) == ghostBlock || (clickedBlock - 4) == ghostBlock || (clickedBlock - 28) == ghostBlock)
+//         {
+//             return 'B';
+//         }
+//         else
+//         {
+//             return generateRandomChar();
+//         }
+//     }
+//     else if (ghostBlock == (rows * (cols - 1)))
+//     {
+//         if (clickedBlock == ghostBlock || (clickedBlock - 1) == ghostBlock || (clickedBlock + 7) == ghostBlock || (clickedBlock + 8) == ghostBlock)
+//         {
+//             return 'S';
+//         }
+//         else if ((clickedBlock - 2) == ghostBlock || (clickedBlock - 3) == ghostBlock || (clickedBlock + 16) == ghostBlock || (clickedBlock + 24) == ghostBlock || (clickedBlock + 14) == ghostBlock || (clickedBlock + 21) == ghostBlock)
+//         {
+//             return 'T';
+//         }
+//         else if ((clickedBlock - 4) == ghostBlock || (clickedBlock + 32) == ghostBlock || (clickedBlock - 4) == ghostBlock || (clickedBlock + 28) == ghostBlock)
+//         {
+//             return 'B';
+//         }
+//         else
+//         {
+//             return generateRandomChar();
+//         }
+//     }
+//     else if (ghostBlock == ((rows * cols) - 1))
+//     {
+//         if (clickedBlock == ghostBlock || (clickedBlock + 1) == ghostBlock || (clickedBlock + 8) == ghostBlock || (clickedBlock + 9) == ghostBlock)
+//         {
+//             return 'S';
+//         }
+//         else if ((clickedBlock + 2) == ghostBlock || (clickedBlock + 3) == ghostBlock || (clickedBlock - 16) == ghostBlock || (clickedBlock - 24) == ghostBlock || (clickedBlock - 18) == ghostBlock || (clickedBlock - 27) == ghostBlock)
+//         {
+//             return 'T';
+//         }
+//         else if ((clickedBlock + 4) == ghostBlock || (clickedBlock - 32) == ghostBlock || (clickedBlock - 4) == ghostBlock || (clickedBlock - 28) == ghostBlock)
+//         {
+//             return 'B';
+//         }
+//         else
+//         {
+//             return generateRandomChar();
+//         }
+//     }
+//     return 'L';
+// }
+
+char checkGhostAndClickedBlockDistance(int ghostBlock, int clickedBlock)
+{
+
+    // if (clickedBlock == ghostBlock || (clickedBlock + 1) == ghostBlock || (clickedBlock - 1) == ghostBlock || clickedBlock >= (ghostBlock + 7) || clickedBlock <= (ghostBlock + 7))
+    // {
+    //     return 'S';
+    // }
+    if ((clickedBlock) == ghostBlock ||
+        (clickedBlock + 1) == ghostBlock ||
+        (clickedBlock - 1) == ghostBlock ||
+        (clickedBlock + 8) == ghostBlock ||
+        (clickedBlock - 8) == ghostBlock ||
+        (clickedBlock + 9) == ghostBlock ||
+        (clickedBlock - 9) == ghostBlock ||
+        (clickedBlock + 7) == ghostBlock ||
+        (clickedBlock - 7) == ghostBlock)
     {
         return 'S';
     }
-    else if (abs(clickedBlock - ghostBlock) == 2 || abs(clickedBlock - ghostBlock) == 3)
+    else if ((clickedBlock + 2) == ghostBlock ||
+             (clickedBlock - 2) == ghostBlock ||
+             (clickedBlock + 3) == ghostBlock ||
+             (clickedBlock - 3) == ghostBlock ||
+             (clickedBlock + 5) == ghostBlock ||
+             (clickedBlock - 5) == ghostBlock ||
+             (clickedBlock + 6) == ghostBlock ||
+             (clickedBlock - 6) == ghostBlock ||
+             (clickedBlock + 10) == ghostBlock ||
+             (clickedBlock - 10) == ghostBlock ||
+             (clickedBlock + 11) == ghostBlock ||
+             (clickedBlock - 11) == ghostBlock ||
+             (clickedBlock + 13) == ghostBlock ||
+             (clickedBlock - 13) == ghostBlock ||
+             (clickedBlock + 14) == ghostBlock ||
+             (clickedBlock - 14) == ghostBlock ||
+             (clickedBlock + 15) == ghostBlock ||
+             (clickedBlock - 15) == ghostBlock ||
+             (clickedBlock + 16) == ghostBlock ||
+             (clickedBlock - 16) == ghostBlock ||
+             (clickedBlock + 17) == ghostBlock ||
+             (clickedBlock - 17) == ghostBlock ||
+             (clickedBlock + 18) == ghostBlock ||
+             (clickedBlock - 18) == ghostBlock ||
+             (clickedBlock + 19) == ghostBlock ||
+             (clickedBlock - 19) == ghostBlock ||
+             (clickedBlock + 22) == ghostBlock ||
+             (clickedBlock - 22) == ghostBlock ||
+             (clickedBlock + 23) == ghostBlock ||
+             (clickedBlock - 23) == ghostBlock ||
+             (clickedBlock + 24) == ghostBlock ||
+             (clickedBlock - 24) == ghostBlock ||
+             (clickedBlock + 25) == ghostBlock ||
+             (clickedBlock - 25) == ghostBlock ||
+             (clickedBlock + 26) == ghostBlock ||
+             (clickedBlock - 26) == ghostBlock)
     {
         return 'T';
     }
-    else if (abs(clickedBlock - ghostBlock) == 4)
-    {
-        return 'B';
-    }
-    else
-    {
-        // TODO: random !!
-        return 'F';
-    }
+    // else
+    // {
+    //     return 'B';
+    // }
+
+    // cout << *(grid + clickedBlock) << endl;
+    return 'L';
+
+    // if (ghostBlock == 0 || ghostBlock == (rows - 1) || ghostBlock == ((rows * (cols - 1))) || ghostBlock == ((rows * cols) - 1))
+    // {
+    //     return ;
+    // }
+    // return 'L';
+
+    // else if (abs(clickedBlock - ghostBlock) == 2 || abs(clickedBlock - ghostBlock) == 3)
+    // {
+    //     return 'T';
+    // }
+    // else if (abs(clickedBlock - ghostBlock) == 4)
+    // {
+    //     return 'B';
+    // }
+    // else
+    // {
+    //     // TODO: random !!
+    //     return 'L';
+    // }
 }
 
 void huntGhost(int x, int y)
@@ -142,18 +310,21 @@ void huntGhost(int x, int y)
     // Place 'S' to draw a snake
     // place 'T' to draw a turtle
     // place 'B' to draw a bunny
-    // TODO : !!
-    int clickedRow = 0;
-    int clickedCol = 0;
+    if (!ended)
+    {
+        // TODO : !!
+        int clickedRow = 0;
+        int clickedCol = 0;
 
-    int clickedBlock = checkCoOrdinates(x, y);
-    int ghostBlock = getGhostBlock(ghostRow, ghostCol);
+        int clickedBlock = checkCoOrdinates(x, y);
+        int ghostBlock = getGhostBlock(ghostRow, ghostCol);
 
-    cout << clickedBlock << " Block -- !" << endl;
-    cout << ghostBlock << " Ghost -- !" << endl;
+        cout << clickedBlock << " Block -- !" << endl;
+        cout << ghostBlock << " Ghost -- !" << endl;
 
-    *(grid + clickedBlock) = checkGhostAndClickedBlockDistance(ghostBlock, clickedRow, clickedCol clickedBlock);
-    cout << x << ", " << y << " is clicked !" << endl;
+        *(grid + clickedBlock) = checkGhostAndClickedBlockDistance(ghostBlock, clickedBlock);
+        // cout << x << ", " << y << " is clicked box: " << clickedBlock << endl;
+    }
 }
 
 void bustGhost(int x, int y)
@@ -164,15 +335,22 @@ void bustGhost(int x, int y)
     // according to game rules you need to put appropriate character in the grid for that block
     // place 'S' to draw snake, when the game is won
     // place 'F' to draw failed symbol, when the game is failed
-    int clickedBlock = checkCoOrdinates(x, y);
-    int ghostBlock = getGhostBlock(ghostRow, ghostCol);
-    if (clickedBlock == ghostBlock)
+    if (!ended)
     {
-        *(grid + clickedBlock) = 'S';
-    }
-    else
-    {
-        *(grid + clickedBlock) = 'F';
+
+        int clickedBlock = checkCoOrdinates(x, y);
+        int ghostBlock = getGhostBlock(ghostRow, ghostCol);
+        cout << clickedBlock << " Block -- !" << endl;
+        cout << ghostBlock << " Ghost -- !" << endl;
+        if (clickedBlock == ghostBlock)
+        {
+            *(grid + clickedBlock) = 'G';
+        }
+        else
+        {
+            *(grid + clickedBlock) = 'F';
+        }
+        ended = true;
     }
 }
 
