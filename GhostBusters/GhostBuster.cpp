@@ -91,8 +91,8 @@ void initialize()
         *(grid + i) = 'L';
     }
     // generate two random numbers and store in ghostRow and ghostCol variables
-    ghostRow = 5;
-    ghostCol = 2;
+    ghostRow = 3;
+    ghostCol = 3;
 }
 
 int checkCoOrdinates(int x, int y)
@@ -301,6 +301,12 @@ char checkGhostAndClickedBlockDistance(int ghostBlock, int clickedBlock)
     // }
 }
 
+double distanceCalculator(int cX, int cY, int gX, int gY)
+{
+    cout << cX << cY << gX << gY << endl;
+    return sqrt(pow((cX - gX), 2) + pow((cY - gY), 2));
+}
+
 void huntGhost(int x, int y)
 {
     // this function is called every time you click on the screen
@@ -316,13 +322,44 @@ void huntGhost(int x, int y)
         int clickedRow = 0;
         int clickedCol = 0;
 
+        int blockWidth = width / cols;
+        int blockHeight = height / rows;
+        int blockSize = blockWidth * blockHeight;
+        clickedRow = y / blockHeight;
+        clickedCol = x / blockWidth;
+
+        int differenceX = abs(ghostRow - clickedCol);
+        int differenceY = abs(ghostCol - clickedRow);
+
         int clickedBlock = checkCoOrdinates(x, y);
         int ghostBlock = getGhostBlock(ghostRow, ghostCol);
 
         cout << clickedBlock << " Block -- !" << endl;
         cout << ghostBlock << " Ghost -- !" << endl;
 
-        *(grid + clickedBlock) = checkGhostAndClickedBlockDistance(ghostBlock, clickedBlock);
+        int finalDifference = distanceCalculator(clickedRow, clickedCol, ghostCol, ghostRow);
+        // differenceX > differenceY ? finalDifference = differenceX : finalDifference = differenceY;
+
+        cout << distanceCalculator(clickedRow, clickedCol, ghostCol, ghostRow) << " !!!!!!!!!11" << endl;
+
+        if (finalDifference >= 0 && finalDifference <= 1)
+        {
+            *(grid + clickedBlock) = 'S';
+        }
+        else if (finalDifference > 1 && finalDifference <= 3)
+        {
+            *(grid + clickedBlock) = 'T';
+        }
+        else if (finalDifference > 3 && finalDifference < 5)
+        {
+            *(grid + clickedBlock) = 'B';
+        }
+        else
+        {
+            *(grid + clickedBlock) = generateRandomChar();
+        }
+
+        // *(grid + clickedBlock) = checkGhostAndClickedBlockDistance(ghostBlock, clickedBlock);
         // cout << x << ", " << y << " is clicked box: " << clickedBlock << endl;
     }
 }
