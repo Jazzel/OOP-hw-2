@@ -80,21 +80,6 @@ void drawBlocks(SDL_Renderer *renderer, SDL_Texture *texture)
 
 bool ended = false;
 
-void initialize()
-{
-    // Create memory for grid here, it should be one dimensional array.
-    grid = new char[rows * cols];
-    // The memory should be rows*cols size.
-    // Initialize entire grid with 'L' so that locks are displayed all over
-    for (int i = 0; i < rows * cols; i++)
-    {
-        *(grid + i) = 'L';
-    }
-    // generate two random numbers and store in ghostRow and ghostCol variables
-    ghostRow = 3;
-    ghostCol = 3;
-}
-
 int checkCoOrdinates(int x, int y)
 {
     int blockWidth = width / cols;
@@ -104,201 +89,34 @@ int checkCoOrdinates(int x, int y)
     int locationY = (y) / blockHeight;
     cout << "location: " << locationX << ", " << locationY << endl;
 
-    return (locationY * 8) + locationX;
+    return (locationY * cols) + locationX;
 }
 
 int getGhostBlock(int ghostX, int ghostY)
 {
-    return (ghostY * 8) + ghostX;
+    return (ghostY * cols) + ghostX;
+}
+
+int generateRandomInteger(int min, int max)
+{
+    int range = max - min + 1;
+    return rand() % range + min;
 }
 
 char generateRandomChar()
 {
-    return 'Z';
-}
-
-// char sideBlocks(int ghostBlock, int clickedBlock)
-// {
-//     if (clickedBlock == ghostBlock || (clickedBlock - 7) == ghostBlock || (clickedBlock - 8) == ghostBlock || (clickedBlock + 1) == ghostBlock || (clickedBlock + 8) == ghostBlock || (clickedBlock + 9) == ghostBlock)
-//     {
-//         return 'S';
-//     }
-// }
-
-// char midBlocks(int ghostBlock, int clickedBlock)
-// {
-//     if (clickedBlock == ghostBlock || (clickedBlock - 1) == ghostBlock || (clickedBlock - 7) == ghostBlock || (clickedBlock - 8) == ghostBlock || (clickedBlock - 9) == ghostBlock || (clickedBlock + 1) == ghostBlock || (clickedBlock + 7) == ghostBlock || (clickedBlock + 8) == ghostBlock || (clickedBlock + 9) == ghostBlock)
-//     {
-//         return 'S';
-//     }
-// }
-
-// char cornerBlocks(int ghostBlock, int clickedBlock)
-// {
-//     if (ghostBlock == 0)
-//     {
-//         if (clickedBlock == ghostBlock || (clickedBlock - 1) == ghostBlock || (clickedBlock - 8) == ghostBlock || (clickedBlock - 9) == ghostBlock)
-//         {
-//             return 'S';
-//         }
-//         else if ((clickedBlock - 2) == ghostBlock || (clickedBlock - 3) == ghostBlock || (clickedBlock - 16) == ghostBlock || (clickedBlock - 18) == ghostBlock || (clickedBlock - 24) == ghostBlock || (clickedBlock - 27) == ghostBlock)
-//         {
-//             return 'T';
-//         }
-//         else if ((clickedBlock - 4) == ghostBlock || (clickedBlock - 32) == ghostBlock || (clickedBlock - 36) == ghostBlock)
-//         {
-//             return 'B';
-//         }
-//         else
-//         {
-//             return generateRandomChar();
-//         }
-//     }
-//     else if (ghostBlock == (rows - 1))
-//     {
-//         if (clickedBlock == ghostBlock || (clickedBlock + 1) == ghostBlock || (clickedBlock - 7) == ghostBlock || (clickedBlock - 8) == ghostBlock)
-//         {
-//             return 'S';
-//         }
-//         else if ((clickedBlock + 2) == ghostBlock || (clickedBlock + 3) == ghostBlock || (clickedBlock - 16) == ghostBlock || (clickedBlock - 24) == ghostBlock || (clickedBlock - 14) == ghostBlock || (clickedBlock - 21) == ghostBlock)
-//         {
-//             return 'T';
-//         }
-//         else if ((clickedBlock + 4) == ghostBlock || (clickedBlock - 32) == ghostBlock || (clickedBlock - 4) == ghostBlock || (clickedBlock - 28) == ghostBlock)
-//         {
-//             return 'B';
-//         }
-//         else
-//         {
-//             return generateRandomChar();
-//         }
-//     }
-//     else if (ghostBlock == (rows * (cols - 1)))
-//     {
-//         if (clickedBlock == ghostBlock || (clickedBlock - 1) == ghostBlock || (clickedBlock + 7) == ghostBlock || (clickedBlock + 8) == ghostBlock)
-//         {
-//             return 'S';
-//         }
-//         else if ((clickedBlock - 2) == ghostBlock || (clickedBlock - 3) == ghostBlock || (clickedBlock + 16) == ghostBlock || (clickedBlock + 24) == ghostBlock || (clickedBlock + 14) == ghostBlock || (clickedBlock + 21) == ghostBlock)
-//         {
-//             return 'T';
-//         }
-//         else if ((clickedBlock - 4) == ghostBlock || (clickedBlock + 32) == ghostBlock || (clickedBlock - 4) == ghostBlock || (clickedBlock + 28) == ghostBlock)
-//         {
-//             return 'B';
-//         }
-//         else
-//         {
-//             return generateRandomChar();
-//         }
-//     }
-//     else if (ghostBlock == ((rows * cols) - 1))
-//     {
-//         if (clickedBlock == ghostBlock || (clickedBlock + 1) == ghostBlock || (clickedBlock + 8) == ghostBlock || (clickedBlock + 9) == ghostBlock)
-//         {
-//             return 'S';
-//         }
-//         else if ((clickedBlock + 2) == ghostBlock || (clickedBlock + 3) == ghostBlock || (clickedBlock - 16) == ghostBlock || (clickedBlock - 24) == ghostBlock || (clickedBlock - 18) == ghostBlock || (clickedBlock - 27) == ghostBlock)
-//         {
-//             return 'T';
-//         }
-//         else if ((clickedBlock + 4) == ghostBlock || (clickedBlock - 32) == ghostBlock || (clickedBlock - 4) == ghostBlock || (clickedBlock - 28) == ghostBlock)
-//         {
-//             return 'B';
-//         }
-//         else
-//         {
-//             return generateRandomChar();
-//         }
-//     }
-//     return 'L';
-// }
-
-char checkGhostAndClickedBlockDistance(int ghostBlock, int clickedBlock)
-{
-
-    // if (clickedBlock == ghostBlock || (clickedBlock + 1) == ghostBlock || (clickedBlock - 1) == ghostBlock || clickedBlock >= (ghostBlock + 7) || clickedBlock <= (ghostBlock + 7))
-    // {
-    //     return 'S';
-    // }
-    if ((clickedBlock) == ghostBlock ||
-        (clickedBlock + 1) == ghostBlock ||
-        (clickedBlock - 1) == ghostBlock ||
-        (clickedBlock + 8) == ghostBlock ||
-        (clickedBlock - 8) == ghostBlock ||
-        (clickedBlock + 9) == ghostBlock ||
-        (clickedBlock - 9) == ghostBlock ||
-        (clickedBlock + 7) == ghostBlock ||
-        (clickedBlock - 7) == ghostBlock)
+    int random = generateRandomInteger(1, 3);
+    switch (random)
     {
+    case 1:
+        return 'S';
+    case 2:
+        return 'T';
+    case 3:
+        return 'B';
+    default:
         return 'S';
     }
-    else if ((clickedBlock + 2) == ghostBlock ||
-             (clickedBlock - 2) == ghostBlock ||
-             (clickedBlock + 3) == ghostBlock ||
-             (clickedBlock - 3) == ghostBlock ||
-             (clickedBlock + 5) == ghostBlock ||
-             (clickedBlock - 5) == ghostBlock ||
-             (clickedBlock + 6) == ghostBlock ||
-             (clickedBlock - 6) == ghostBlock ||
-             (clickedBlock + 10) == ghostBlock ||
-             (clickedBlock - 10) == ghostBlock ||
-             (clickedBlock + 11) == ghostBlock ||
-             (clickedBlock - 11) == ghostBlock ||
-             (clickedBlock + 13) == ghostBlock ||
-             (clickedBlock - 13) == ghostBlock ||
-             (clickedBlock + 14) == ghostBlock ||
-             (clickedBlock - 14) == ghostBlock ||
-             (clickedBlock + 15) == ghostBlock ||
-             (clickedBlock - 15) == ghostBlock ||
-             (clickedBlock + 16) == ghostBlock ||
-             (clickedBlock - 16) == ghostBlock ||
-             (clickedBlock + 17) == ghostBlock ||
-             (clickedBlock - 17) == ghostBlock ||
-             (clickedBlock + 18) == ghostBlock ||
-             (clickedBlock - 18) == ghostBlock ||
-             (clickedBlock + 19) == ghostBlock ||
-             (clickedBlock - 19) == ghostBlock ||
-             (clickedBlock + 22) == ghostBlock ||
-             (clickedBlock - 22) == ghostBlock ||
-             (clickedBlock + 23) == ghostBlock ||
-             (clickedBlock - 23) == ghostBlock ||
-             (clickedBlock + 24) == ghostBlock ||
-             (clickedBlock - 24) == ghostBlock ||
-             (clickedBlock + 25) == ghostBlock ||
-             (clickedBlock - 25) == ghostBlock ||
-             (clickedBlock + 26) == ghostBlock ||
-             (clickedBlock - 26) == ghostBlock)
-    {
-        return 'T';
-    }
-    // else
-    // {
-    //     return 'B';
-    // }
-
-    // cout << *(grid + clickedBlock) << endl;
-    return 'L';
-
-    // if (ghostBlock == 0 || ghostBlock == (rows - 1) || ghostBlock == ((rows * (cols - 1))) || ghostBlock == ((rows * cols) - 1))
-    // {
-    //     return ;
-    // }
-    // return 'L';
-
-    // else if (abs(clickedBlock - ghostBlock) == 2 || abs(clickedBlock - ghostBlock) == 3)
-    // {
-    //     return 'T';
-    // }
-    // else if (abs(clickedBlock - ghostBlock) == 4)
-    // {
-    //     return 'B';
-    // }
-    // else
-    // {
-    //     // TODO: random !!
-    //     return 'L';
-    // }
 }
 
 double distanceCalculator(int cX, int cY, int gX, int gY)
@@ -338,9 +156,6 @@ void huntGhost(int x, int y)
         cout << ghostBlock << " Ghost -- !" << endl;
 
         int finalDifference = distanceCalculator(clickedRow, clickedCol, ghostCol, ghostRow);
-        // differenceX > differenceY ? finalDifference = differenceX : finalDifference = differenceY;
-
-        cout << distanceCalculator(clickedRow, clickedCol, ghostCol, ghostRow) << " !!!!!!!!!11" << endl;
 
         if (finalDifference >= 0 && finalDifference <= 1)
         {
@@ -358,9 +173,6 @@ void huntGhost(int x, int y)
         {
             *(grid + clickedBlock) = generateRandomChar();
         }
-
-        // *(grid + clickedBlock) = checkGhostAndClickedBlockDistance(ghostBlock, clickedBlock);
-        // cout << x << ", " << y << " is clicked box: " << clickedBlock << endl;
     }
 }
 
@@ -391,8 +203,32 @@ void bustGhost(int x, int y)
     }
 }
 
+void setGhostLocation()
+{
+    int randomX = generateRandomInteger(0, rows);
+    int randomY = generateRandomInteger(0, cols);
+
+    ghostRow = randomX;
+    ghostCol = randomY;
+}
+
+void initialize()
+{
+    // Create memory for grid here, it should be one dimensional array.
+    grid = new char[rows * cols];
+    // The memory should be rows*cols size.
+    // Initialize entire grid with 'L' so that locks are displayed all over
+    for (int i = 0; i < rows * cols; i++)
+    {
+        *(grid + i) = 'L';
+    }
+    // generate two random numbers and store in ghostRow and ghostCol variables
+    setGhostLocation();
+}
+
 void quitGhostBuster()
 {
     // delete the grid here
     delete[] grid;
+    grid = NULL;
 }
