@@ -7,7 +7,7 @@
 using namespace std;
 
 // Currently rows and columns are set to 8, however your game implementation should work for any other number
-const int rows = 8, cols = 8;
+const int rows = 9, cols = 9;
 
 // grid will store characters matrix of rows*cols size, you have to allocate memory to it in initialize function below
 char *grid = NULL;
@@ -78,30 +78,105 @@ void drawBlocks(SDL_Renderer *renderer, SDL_Texture *texture)
 
 // To Do zone:
 
+// ! Use "Better Comments" extension for better comments :)
+
+// * ----------------- Defining variables
+
+// ? variables defined above
+/**
+ * * ghostCol - for assigning the column for the ghost
+ * * ghostRow - for assigning the row for the ghost
+ * * *grid -  for declaring dynamic array in the memory on which the game runs
+ * ! constants
+ * * rows - to refine number of rows for the game
+ * * cols -  to define number of columns for the game
+ * * width - to define the width of the window
+ * * height - to define the height of the window
+ *
+ */
+
+// ? bool ended variable to stop the game
+// * - false means the game is running.
+// * - true means the game is lost/won.
 bool ended = false;
 
+// * ----------------- Helper functions ----------------
+
+/**
+ * ? @brief checkCoOrdinates function converts x and y pixels to the index of the block
+ * * according to the grid[] initialized above
+ * * also it saves the block width and height nad locationX and locationY
+ * ? locationX is the row and locationY is col of the clicked block
+ *
+ * ? @param x
+ * * int x pixel of the screen
+ * ? @param y
+ * * int y pixel of the screen
+ *
+ * ! @return int
+ * * index of grid[] or the number of clicked block
+ */
 int checkCoOrdinates(int x, int y)
 {
     int blockWidth = width / cols;
     int blockHeight = height / rows;
-    cout << "Block Size: " << blockWidth << ", " << blockHeight << endl;
+    // cout << "Block Size: " << blockWidth << ", " << blockHeight << endl;
     int locationX = (x) / blockWidth;
     int locationY = (y) / blockHeight;
-    cout << "location: " << locationX << ", " << locationY << endl;
+    // cout << "location: " << locationX << ", " << locationY << endl;
 
     return (locationY * cols) + locationX;
 }
+
+/**
+ * ? @brief getGhostBlock gets the Ghost Block index for the grid[]
+ *
+ * ? @param ghostX
+ * * int row for the ghost
+ * ? @param ghostY
+ * * int col for the ghost
+ *
+ * ! @return int
+ * * index of ghost
+ */
 
 int getGhostBlock(int ghostX, int ghostY)
 {
     return (ghostY * cols) + ghostX;
 }
 
+/**
+ * ? brief generateRandomInteger gived random number according to range given
+ *
+ * ? @param min
+ * * int - the lowest number possible
+ * ? @param max
+ * * int - the highest number possible
+ *
+ * ! @return int
+ * * random int
+ */
+
 int generateRandomInteger(int min, int max)
 {
     int range = max - min + 1;
     return rand() % range + min;
 }
+
+/**
+ * ? @brief generateRandomChar gives a random char
+ * * by getting the random integer from generateRandomInteger function
+ *
+ * ! @return char
+ * * if random int is 1
+ * * -- returns S
+ * * if it is 2
+ * * -- returns T
+ * * if it is 3
+ * * -- returns B
+ * * else
+ * * -- returns S
+ */
 
 char generateRandomChar()
 {
@@ -118,91 +193,71 @@ char generateRandomChar()
         return 'S';
     }
 }
-
+/**
+ * ? @brief distanceCalculator takes 2 points (x, y)
+ * * and caluclates the distance between the two points
+ *
+ * ? @param cX
+ * * int - x co-ordinate for clickedBlock
+ * ? @param cY
+ * * int - y co-ordinate for clickedBlock
+ * ? @param gX
+ * * int - x co-ordinate for ghostBlock
+ * ? @param gY
+ * * int - y co-ordinate for ghostBlock
+ *
+ * ! @return double
+ * * distance of two points - decimal number
+ */
 double distanceCalculator(int cX, int cY, int gX, int gY)
 {
-    cout << cX << cY << gX << gY << endl;
     return sqrt(pow((cX - gX), 2) + pow((cY - gY), 2));
 }
 
-void huntGhost(int x, int y)
+/**
+ * ? @brief fillBlock gets the clickedBlock and distance
+ * * and decides what to replace at grid[] location clickedBlock
+ *
+ * * if distance is between 0 and 1
+ * * -- replaces with S
+ * * if distance is between 2 and 3 or greater than 1 and less and equal to 3
+ * * -- replaces with T
+ * * if distance is 4 or greater than 3 and less than 5
+ * * -- replaces with B
+ * * else generates random char with generateRandomChar function and replaces with that
+ *
+ * @param clickedBlock
+ * * int - index of grid[] | clicked block by user.
+ * @param distance
+ * * double -  distance between clicked block and ghost block.
+ */
+void fillBlock(int clickedBlock, double distance)
 {
-    // this function is called every time you click on the screen
-    // x, y are screen coordinates, you need to identify the block from these coordinates and using screen width and height values
-    // each block size is width/cols x height/rows
-    // according to game rules you need to put appropriate character in the grid for that block
-    // Place 'S' to draw a snake
-    // place 'T' to draw a turtle
-    // place 'B' to draw a bunny
-    if (!ended)
+    if (distance >= 0 && distance <= 1)
     {
-        // TODO : !!
-        int clickedRow = 0;
-        int clickedCol = 0;
-
-        int blockWidth = width / cols;
-        int blockHeight = height / rows;
-        int blockSize = blockWidth * blockHeight;
-        clickedRow = y / blockHeight;
-        clickedCol = x / blockWidth;
-
-        int differenceX = abs(ghostRow - clickedCol);
-        int differenceY = abs(ghostCol - clickedRow);
-
-        int clickedBlock = checkCoOrdinates(x, y);
-        int ghostBlock = getGhostBlock(ghostRow, ghostCol);
-
-        cout << clickedBlock << " Block -- !" << endl;
-        cout << ghostBlock << " Ghost -- !" << endl;
-
-        int finalDifference = distanceCalculator(clickedRow, clickedCol, ghostCol, ghostRow);
-
-        if (finalDifference >= 0 && finalDifference <= 1)
-        {
-            *(grid + clickedBlock) = 'S';
-        }
-        else if (finalDifference > 1 && finalDifference <= 3)
-        {
-            *(grid + clickedBlock) = 'T';
-        }
-        else if (finalDifference > 3 && finalDifference < 5)
-        {
-            *(grid + clickedBlock) = 'B';
-        }
-        else
-        {
-            *(grid + clickedBlock) = generateRandomChar();
-        }
+        *(grid + clickedBlock) = 'S';
+    }
+    else if (distance > 1 && distance <= 3)
+    {
+        *(grid + clickedBlock) = 'T';
+    }
+    else if (distance > 3 && distance < 5)
+    {
+        *(grid + clickedBlock) = 'B';
+    }
+    else
+    {
+        *(grid + clickedBlock) = generateRandomChar();
     }
 }
-
-void bustGhost(int x, int y)
-{
-    // this function is called when you right-click
-    // it should work only one time, and you decide whether game is won or failed
-    // once the game is won/failed, nothing in game should change anymore.
-    // according to game rules you need to put appropriate character in the grid for that block
-    // place 'S' to draw snake, when the game is won
-    // place 'F' to draw failed symbol, when the game is failed
-    if (!ended)
-    {
-
-        int clickedBlock = checkCoOrdinates(x, y);
-        int ghostBlock = getGhostBlock(ghostRow, ghostCol);
-        cout << clickedBlock << " Block -- !" << endl;
-        cout << ghostBlock << " Ghost -- !" << endl;
-        if (clickedBlock == ghostBlock)
-        {
-            *(grid + clickedBlock) = 'G';
-        }
-        else
-        {
-            *(grid + clickedBlock) = 'F';
-        }
-        ended = true;
-    }
-}
-
+/**
+ * ? @brief setGhostLocation set the Ghost Location
+ * * using generateRandomInteger
+ *
+ * * gets 2 random numbers and assign
+ * * ghostRow and ghostCol with it.
+ *
+ */
 void setGhostLocation()
 {
     int randomX = generateRandomInteger(0, rows);
@@ -212,23 +267,119 @@ void setGhostLocation()
     ghostCol = randomY;
 }
 
+// * -------------------- Main Functions
+
+/**
+ * ? @brief huntGhost gets the clickedBlock, co-ordinates for ghostBlock and clickedBlock
+ * * calculates distance between the co-ordinates and data to fillBlock function
+ *
+ * ? @param x
+ * * int - x pixel for the clicked location
+ * ? @param y
+ * * int - y pixel for the clicked location
+ */
+void huntGhost(int x, int y)
+{
+    // * if ended is false then the game will run.
+    if (!ended)
+    {
+        // * getting block width and height
+        int blockWidth = width / cols;
+        int blockHeight = height / rows;
+        // * getting block Area
+        int blockSize = blockWidth * blockHeight;
+
+        // * getting clicked row and clicked column with the help of height and width.
+        int clickedRow = y / blockHeight;
+        int clickedCol = x / blockWidth;
+
+        // * getting clicked block and ghost block with helper functions
+        int clickedBlock = checkCoOrdinates(x, y);
+        int ghostBlock = getGhostBlock(ghostRow, ghostCol);
+
+        // * getting distance between clicked block and ghost block
+        double distance = distanceCalculator(clickedRow, clickedCol, ghostCol, ghostRow);
+
+        // * calling fillBlock function to finally unlock the lock
+        // * and replace it with Bunny, Turtle or Snake
+        fillBlock(clickedBlock, distance);
+    }
+}
+/**
+ * ? @brief huntGhost gets the co-ordinates clickedBlock
+ * * and obtains ghostBlock from getGhostBlock function
+ *
+ * * if ghostBlock and clickedBlock matches
+ * * -- then it replaces clickedBlock index in grid[] with G (Ghost)
+ * * -- and the game is won
+ *
+ * * else
+ * * -- replaces clickedBlock index in grid[] with F (Fail)
+ * * -- and the games is lost
+ *
+ *  * also it toggles ended to change the game state to Won/lost.
+ *
+ * ? @param x
+ * * int - x pixel of clicked block
+ * ? @param y
+ * * int - y pixel of clicked block
+ */
+
+void bustGhost(int x, int y)
+{
+    // * if ended is false then the game will run.
+    if (!ended)
+    {
+        // * gets clicked block and ghost block from the helper functions
+        int clickedBlock = checkCoOrdinates(x, y);
+        int ghostBlock = getGhostBlock(ghostRow, ghostCol);
+
+        // * checks if clicked block and ghost block are same and decides what to do
+        // * G if it is same and F if different
+        if (clickedBlock == ghostBlock)
+        {
+            *(grid + clickedBlock) = 'G';
+        }
+        else
+        {
+            *(grid + clickedBlock) = 'F';
+        }
+        // * toggle ended to end the game
+        ended = true;
+    }
+}
+
+// * ------------------- Initializer Funtion
+
+/**
+ * ? @brief initialize function initializes  everything
+ * * the grid[] with all the locks
+ * * ghost location with helper setGhostLocation
+ *
+ */
+
 void initialize()
 {
-    // Create memory for grid here, it should be one dimensional array.
+    // * creates dynamic grid array with length (rows * cols)
     grid = new char[rows * cols];
-    // The memory should be rows*cols size.
-    // Initialize entire grid with 'L' so that locks are displayed all over
+    // * adding L (locks) at every location in grid[]
     for (int i = 0; i < rows * cols; i++)
     {
         *(grid + i) = 'L';
     }
-    // generate two random numbers and store in ghostRow and ghostCol variables
+    // * setting ghost at random location using setGhostLocation function
     setGhostLocation();
 }
 
+/**
+// ? @brief quitGhostBuster delete the dynamic array from the memory
+ * * and assigns NULL to it.
+ * ! important to delete dynamic array and to assign NULL
+ * !  So array can be dellocated from the memery and the stored values are also removed
+ * * so noone can access them again.
+ */
 void quitGhostBuster()
 {
-    // delete the grid here
     delete[] grid;
     grid = NULL;
 }
